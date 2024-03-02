@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Mobile-Friendly Route Display</title>
+    <script
+        src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVqHOpm6DX495uj_7m7wB1KNGVZk6IZnU&callback=initMap&libraries=&v=weekly"
+        async defer></script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        body,
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+        }
+
+        #map {
+            height: 60%;
+            /* Adjust height as needed for mobile */
+            width: 100%;
+        }
+
+        .input-form {
+            padding: 20px;
+            background-color: #f8f9fa;
+        }
+
+        .input-form input,
+        .input-form button,
+        .input-form label {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 10px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+
+        .input-form button {
+            background-color: #007bff;
+            color: white;
+            border-color: #007bff;
+        }
+
+        .input-form label {
+            margin-left: 0;
+        }
+
+        .input-form input[type="checkbox"] {
+            display: inline;
+            width: auto;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="input-form">
+        <input type="text" id="origin" placeholder="Enter origin address">
+        <input type="text" id="destination" placeholder="Enter destination address">
+        <label>
+            <input type="checkbox" id="modeToggle"> Use Bicycle
+        </label>
+        <button onclick="calculateAndDisplayRoute()">Show Route</button>
+    </div>
+    <div id="map"></div>
+    <script>
+        let map, directionsService, directionsRenderer;
+
+        function initMap() {
+            directionsService = new google.maps.DirectionsService();
+            directionsRenderer = new google.maps.DirectionsRenderer();
+            map = new google.maps.Map(document.getElementById("map"), {
+                zoom: 7,
+                center: { lat: 41.85, lng: -87.65 },
+            });
+            directionsRenderer.setMap(map);
+        }
+
+        function calculateAndDisplayRoute() {
+            const originAddress = document.getElementById("origin").value;
+            const destinationAddress = document.getElementById("destination").value;
+            const modeToggle = document.getElementById("modeToggle").checked;
+            const travelMode = modeToggle ? google.maps.TravelMode.BICYCLING : google.maps.TravelMode.DRIVING;
+
+            directionsService.route({
+                origin: { query: originAddress },
+                destination: { query: destinationAddress },
+                travelMode: travelMode,
+            }, (response, status) => {
+                if (status === google.maps.DirectionsStatus.OK) {
+                    directionsRenderer.setDirections(response);
+                } else {
+                    window.alert("Directions request failed due to " + status);
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
