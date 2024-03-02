@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>Mobile-Friendly Route Display</title>
+    <title>Transcend Maps</title>
     <script
         src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDVqHOpm6DX495uj_7m7wB1KNGVZk6IZnU&callback=initMap&libraries=&v=weekly"
         async defer></script>
@@ -19,10 +19,13 @@
         }
 
         .navbar {
-            background-color: #007bff;
+            background-color: #03254B;
             color: white;
             padding: 10px 20px;
             text-align: center;
+            /* display: flex; */
+            /* Use flexbox to align logo and title */
+            align-items: center;
         }
 
         #map {
@@ -34,12 +37,11 @@
             padding: 20px;
             background-color: #f8f9fa;
             order: 3;
-            /* Makes sure input form is at the bottom */
         }
 
         .input-form input,
-        .input-form button,
-        .input-form label {
+        .input-form button {
+            box-sizing: border-box;
             display: block;
             width: 100%;
             padding: 10px;
@@ -49,33 +51,125 @@
         }
 
         .input-form button {
-            background-color: #007bff;
+            background-color: #03254B;
             color: white;
-            border-color: #007bff;
+            border-color: #03254B;
         }
 
-        .input-form label {
-            margin-left: 0;
+        /* Specific style for labels that are not switch labels */
+        .input-form>label {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
         }
 
-        .input-form input[type="checkbox"] {
-            display: inline;
+        /* Container for the toggle switch */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: start;
+            margin-bottom: 10px;
+            /* Same margin as other elements for consistency */
+        }
+
+        /* Style for the toggle label (text) */
+        .toggle-label {
+            margin-right: 10px;
+        }
+
+        /* Switch button styles */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
+            margin: 0;
+            /* Remove default margins */
+        }
+
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            -webkit-transition: .4s;
+            transition: .4s;
+        }
+
+        input:checked+.slider {
+            background-color: #03254B;
+        }
+
+        input:focus+.slider {
+            box-shadow: 0 0 1px #03254B;
+        }
+
+        input:checked+.slider:before {
+            -webkit-transform: translateX(26px);
+            -ms-transform: translateX(26px);
+            transform: translateX(26px);
+        }
+
+        /* Rounded sliders */
+        .slider.round {
+            border-radius: 34px;
+        }
+
+        .slider.round:before {
+            border-radius: 50%;
+        }
+
+        .navbar-logo {
+            height: 20px;
+            /* Adjust as needed */
             width: auto;
+            /* Adjust width automatically based on the height */
+            margin-right: 10px;
+            /* Add some space between the logo and the title */
         }
     </style>
+
 </head>
 
 <body>
-    <div class="navbar">My Route Planner</div>
+    <div class="navbar">
+        <img src="logo.png" alt="Logo" class="navbar-logo">
+    </div>
     <div id="map"></div>
     <div class="input-form">
         <input type="text" id="origin" placeholder="Enter origin address">
         <input type="text" id="destination" placeholder="Enter destination address">
-        <label>
-            <input type="checkbox" id="modeToggle"> Use Bicycle
-        </label>
+        <div class="toggle-container">
+            <label for="modeToggle" class="toggle-label">Choose Safe Route</label>
+            <label class="switch">
+                <input type="checkbox" id="modeToggle">
+                <span class="slider round"></span>
+            </label>
+        </div>
         <button onclick="calculateAndDisplayRoute()">Show Route</button>
     </div>
+
     <script>
         let map, directionsService, directionsRenderer;
 
